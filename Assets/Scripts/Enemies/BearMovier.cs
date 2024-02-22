@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class BearWalker : MonoBehaviour
+public class BearMovier : MonoBehaviour
 {
     [SerializeField] private float _walkSpeed;
 
