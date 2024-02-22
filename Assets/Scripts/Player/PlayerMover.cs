@@ -2,6 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(PlayerAnimationChanger))]
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent (typeof(SpriteRenderer))]
 public class PlayerMover : MonoBehaviour
 {
     private const string Horizontal = "Horizontal";
@@ -19,11 +20,13 @@ public class PlayerMover : MonoBehaviour
     private PlayerAnimationChanger _animationChanger;
     private Rigidbody2D _rigidbody;
     private bool _isGrounded = true;
+    private SpriteRenderer _spriteRenderer;
 
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        _animationChanger = GetComponent<PlayerAnimationChanger>();
+        _animationChanger = GetComponent<PlayerAnimationChanger>();   
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void FixedUpdate()
@@ -36,19 +39,21 @@ public class PlayerMover : MonoBehaviour
 
     private void Jump()
     {
-        float verticalDirection = Input.GetAxis(Vertical);
-
-        if (_isGrounded && verticalDirection > 0)
-        {
-            _rigidbody.AddForce(Vector3.up * _jumpForce);
-            _animationChanger.Jump();
-        }
+        float verticalDirection = Input.GetAxisRaw(Vertical);
+                
+            if (_isGrounded && verticalDirection > 0)
+            {
+                _rigidbody.AddForce(Vector2.up * _jumpForce);
+                _animationChanger.Jump();
+            }        
     }
 
     private void Run()
     {
         float horizontalDirection = Input.GetAxis(Horizontal);
         var velocity = new Vector3(horizontalDirection * _runSpeed, _rigidbody.velocity.y);
+
+        TryChangeDirection(horizontalDirection);
 
         _rigidbody.velocity = velocity;
 
@@ -59,5 +64,13 @@ public class PlayerMover : MonoBehaviour
             else
                 _animationChanger.Idle();
         }
+    }
+
+    private void TryChangeDirection(float direction)
+    {
+        if (direction < 0)
+            _spriteRenderer.flipX = true;
+        else if (direction > 0)
+            _spriteRenderer.flipX = false;
     }
 }

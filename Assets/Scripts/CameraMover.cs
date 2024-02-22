@@ -1,15 +1,21 @@
 using UnityEngine;
 
 public class CameraMover : MonoBehaviour
-{   
+{
     [SerializeField] private Player _player;
-    [SerializeField] private Camera _camera;
     [SerializeField] private float _moveSpeed;
-    [SerializeField] private float _thrasholdDstance;
+        
+    private Vector3 _targetPosition;
 
-    private void Update()
+    private void Start()
     {
-        if (_camera.transform.position.x - _player.transform.position.x <= _thrasholdDstance)
-            _camera.transform.position = Vector3.MoveTowards(transform.position, _camera.transform.position + Vector3.right, _moveSpeed * Time.deltaTime);
+        _targetPosition = transform.position;
+    }
+
+    private void FixedUpdate()
+    {
+        _targetPosition.x = _player.transform.position.x;
+       
+        transform.position = Vector3.Lerp(transform.position, _targetPosition, _moveSpeed);
     }
 }
